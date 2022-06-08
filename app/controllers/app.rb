@@ -22,5 +22,26 @@ module Slotz
       json(Meeting.all)
     end
 
+    ##
+    # Find all the best timeslots
+    #
+    # JSON Body:
+    # * attendees: array of names
+    # * duration: duration in seconds
+    # * start_time: ISO8601 start time
+    # * end_time: ISO8601 end time
+    #
+    post '/slots/find' do
+      @params = JSON.parse(request.body.read)
+      attendees = Attendee.find_by_names(@params['attendees'])
+      duration = @params['duration']
+      start_time = @params['start_time']
+      end_time = @params['end_time']
+
+      slot_finder = Slotz::SlotFinder.new(attendees, duration, start_time, end_time)
+      slots = slot_finder.find_slots
+
+      json(SlotClassifier.classify(slots))
+    end
   end
 end
