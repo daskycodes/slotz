@@ -18,5 +18,9 @@ module Slotz
       json(Attendee.all)
     end
 
+    get '/meetings' do
+      json(Meeting.all)
+    end
+
   end
 end
