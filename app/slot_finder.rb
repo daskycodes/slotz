@@ -4,6 +4,7 @@ module Slotz
   ##
   # The `Slotz::SlotFinder` will find all available timeslots for the given attendees,
   # the duration, start_time and end_time.
+  #
   class SlotFinder
     def initialize(attendees, duration, start_time, end_time)
       @attendees = attendees
@@ -30,6 +31,7 @@ module Slotz
     #       },
     #       ...
     #     ]
+    #
     def find_slots
       @timeslots.filter do |slot|
         @meetings.none? do |meeting|
@@ -41,6 +43,7 @@ module Slotz
 
     ##
     # List all meetings for the attendees in the given start_time and end_time.
+    #
     def list_meetings
       Meeting.for_attendees(@attendees, @start_time, @end_time)
     end
@@ -58,6 +61,7 @@ module Slotz
     #       },
     #       ...
     #     ]
+    #
     def considered_slots
       timeslots = []
 
@@ -65,7 +69,7 @@ module Slotz
         # Reject days which are not on a weekday.
         next unless date.on_weekday?
 
-        # Start at 9 AM UTC and end at 7 PM UTC.
+        # Start at 9 AM local time and end at 7 PM local time.
         # This is hardcoded but should be refactored to use the user's
         # preferred availabilty. Availability could be a model which
         # belongs to a specific Attendee
