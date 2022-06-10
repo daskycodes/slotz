@@ -30,7 +30,7 @@ module Slotz
     ##
     # TODO: Move to separate `Timeslot` model.
     #
-    # Check whether the given timeslot is in the focus time (7AM UTC- 5PM UTC)
+    # Check whether the given timeslot is in the focus time (7AM UTC - 5PM UTC)
     # We check the total minutes from 0:00 UTC up to the point of 7AM and 5PM UTC
     # and compare them with the timeslots' times.
     #
@@ -38,9 +38,9 @@ module Slotz
     # day of the week. (Maybe there are cases where meetings are put in as blockers for several days like vacations)
     #
     def self.focus_time?(timeslot)
-      total_minutes(timeslot[:start_time]) >= 420 &&
-        total_minutes(timeslot[:end_time]) <= 540 &&
-        timeslot[:start_time].to_date == timeslot[:end_time].to_date
+      timeslot[:start_time].to_date == timeslot[:end_time].to_date &&
+        timeslot[:start_time].hour >= 7 &&
+        timeslot[:end_time].hour <= 9
     end
 
     ##
@@ -49,16 +49,7 @@ module Slotz
     # but we should still consider a weight value imo.
     #
     def self.rank_urgency(timeslot)
-      (total_minutes(timeslot[:start_time]).to_f / 10_000)
-    end
-
-    ##
-    # Returns the total minutes from 0:00 UTC to the given time of the given date
-    #
-    def self.total_minutes(date)
-      hours = date.strftime('%H').to_i
-      minutes = date.strftime('%M').to_i
-      hours * 60 + minutes
+      (timeslot[:start_time].min.to_f / 10_000)
     end
   end
 end
